@@ -71,6 +71,37 @@
                 right: 20px;
                 left: 20px;
             }
+            
+            /* Melhorias para o calendário em dispositivos móveis */
+            #weekDays {
+                gap: 0.5rem !important;
+            }
+            
+            #weekDays button {
+                padding: 0.5rem !important;
+                font-size: 0.9rem !important;
+            }
+            
+            /* Melhorias para os campos de formulário */
+            input[type="text"],
+            input[type="email"],
+            input[type="tel"],
+            input[type="url"],
+            input[type="password"] {
+                font-size: 16px !important; /* Evita zoom automático em iOS */
+                padding: 0.75rem !important;
+            }
+            
+            /* Melhorias para os horários disponíveis */
+            #timeSlots {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+            
+            /* Ajuste de espaçamento geral */
+            .container {
+                padding-left: 1rem !important;
+                padding-right: 1rem !important;
+            }
         }
         
         .toast {
@@ -287,17 +318,17 @@
                     
                     <div class="mb-6">
                         <label class="block text-sm font-medium mb-2">Selecionar Data</label>
-                        <div class="bg-white/10 rounded-lg p-4">
+                        <div class="bg-white/10 rounded-lg p-3 sm:p-4">
                             <!-- Week Navigation -->
-                            <div class="flex justify-between items-center mb-4">
-                                <button type="button" id="prevWeek" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Semana anterior" aria-label="Semana anterior">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <div class="flex justify-between items-center mb-3 sm:mb-4">
+                                <button type="button" id="prevWeek" class="p-1 sm:p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Semana anterior" aria-label="Semana anterior">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
                                     </svg>
                                 </button>
-                                <h3 id="weekTitle" class="text-lg font-semibold text-center"></h3>
-                                <button type="button" id="nextWeek" class="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Próxima semana" aria-label="Próxima semana">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <h3 id="weekTitle" class="text-base sm:text-lg font-semibold text-center"></h3>
+                                <button type="button" id="nextWeek" class="p-1 sm:p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors" title="Próxima semana" aria-label="Próxima semana">
+                                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
                                     </svg>
                                 </button>
@@ -317,9 +348,14 @@
                         </div>
                     </div>
                     
-                    <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 px-6 rounded-lg font-medium transition-colors">
-                        Confirmar Agendamento
-                    </button>
+                    <div class="flex gap-4">
+                        <button type="button" onclick="cancelarAgendamento()" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium transition-colors">
+                            Cancelar
+                        </button>
+                        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 px-6 rounded-lg font-medium transition-colors">
+                            Confirmar Agendamento
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
@@ -358,13 +394,24 @@
             <div class="max-w-4xl mx-auto space-y-8">
                 <!-- Admin Header -->
                 <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mb-8">
-                    <div class="flex justify-between items-center">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                         <div class="flex items-center space-x-4">
                             <span class="text-green-400">✓ Logado como Admin</span>
                         </div>
-                        <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg transition-colors">
-                            Sair
-                        </button>
+                        <div class="flex flex-wrap gap-2">
+                            <button onclick="exportBackup()" class="bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm transition-colors">
+                                📥 Exportar JSON
+                            </button>
+                            <button onclick="exportBackupPDF()" class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm transition-colors">
+                                📄 Exportar PDF
+                            </button>
+                            <button onclick="importBackup()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm transition-colors">
+                                📤 Importar Backup
+                            </button>
+                            <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm transition-colors">
+                                Sair
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -411,42 +458,42 @@
                 </div>
 
                 <!-- Services Management -->
-                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-8">
-                    <div class="flex justify-between items-center mb-6">
-                        <h3 class="text-xl font-bold">Gerenciar Serviços</h3>
-                        <button onclick="showAddServiceForm()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                <div class="bg-white/10 backdrop-blur-sm rounded-2xl p-4 sm:p-8">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                        <h3 class="text-lg sm:text-xl font-bold">Gerenciar Serviços</h3>
+                        <button onclick="showAddServiceForm()" class="w-full sm:w-auto bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base font-medium transition-colors">
                             + Adicionar Serviço
                         </button>
                     </div>
                     
                     <!-- Add/Edit Service Form -->
-                    <div id="serviceForm" class="hidden mb-6 p-4 bg-white/5 rounded-lg border border-white/20">
-                        <h4 id="serviceFormTitle" class="text-lg font-semibold mb-4">Adicionar Novo Serviço</h4>
-                        <div class="grid md:grid-cols-2 gap-4">
+                    <div id="serviceForm" class="hidden mb-4 sm:mb-6 p-3 sm:p-4 bg-white/5 rounded-lg border border-white/20">
+                        <h4 id="serviceFormTitle" class="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Adicionar Novo Serviço</h4>
+                        <div class="grid gap-3 sm:gap-4">
                             <div>
-                                <label class="block text-sm font-medium mb-2">Nome do Serviço</label>
-                                <input type="text" id="serviceName" class="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="Ex: Corte Tradicional">
+                                <label class="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">Nome do Serviço</label>
+                                <input type="text" id="serviceName" class="w-full px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm sm:text-base" placeholder="Ex: Corte Tradicional">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium mb-2">Preço (R$)</label>
-                                <input type="number" id="servicePrice" min="0" step="0.01" class="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400" placeholder="25.00">
+                                <label class="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">Preço (R$)</label>
+                                <input type="number" id="servicePrice" min="0" step="0.01" class="w-full px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm sm:text-base" placeholder="25.00">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium mb-2">Duração (minutos)</label>
-                                <select id="serviceDuration" class="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-400">
+                                <label class="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">Duração (minutos)</label>
+                                <select id="serviceDuration" class="w-full px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 border border-white/30 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-amber-400 text-sm sm:text-base">
                                     <option value="30">30 minutos</option>
                                     <option value="60">1 hora</option>
                                     <option value="90">1h 30min</option>
                                     <option value="120">2 horas</option>
                                 </select>
                             </div>
-                            <div class="md:col-span-2">
-                                <label class="block text-sm font-medium mb-2">Descrição</label>
-                                <textarea id="serviceDescription" rows="2" class="w-full px-4 py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none" placeholder="Descrição do serviço..."></textarea>
+                            <div>
+                                <label class="block text-xs sm:text-sm font-medium mb-1 sm:mb-2">Descrição</label>
+                                <textarea id="serviceDescription" rows="2" class="w-full px-3 py-1.5 sm:px-4 sm:py-2 bg-white/20 border border-white/30 rounded-lg text-white placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-amber-400 resize-none text-sm sm:text-base" placeholder="Descrição do serviço..."></textarea>
                             </div>
                         </div>
-                        <div class="flex space-x-3 mt-4">
-                            <button onclick="saveService()" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                        <div class="flex space-x-2 sm:space-x-3 mt-3 sm:mt-4">
+                            <button onclick="saveService()" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg text-sm sm:text-base font-medium transition-colors">
                                 Salvar Serviço
                             </button>
                             <button onclick="cancelServiceForm()" class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors">
@@ -915,6 +962,16 @@
         window.showPage = function(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
             document.getElementById(pageId + 'Page').classList.remove('hidden');
+        }
+        
+        // Função para cancelar agendamento
+        window.cancelarAgendamento = function() {
+            // Limpa o formulário
+            document.getElementById('bookingForm').reset();
+            // Volta para a página inicial
+            showPage('home');
+            // Mostra mensagem de confirmação
+            showToast('Agendamento cancelado', 'info');
         }
 
         // Admin authentication functions
@@ -1516,9 +1573,8 @@
                     `;
                 } else {
                     // Mostrar como indisponível
-                    let reason = 'Indisponível';
-                    if (isPast) reason = 'Passado';
-                    else if (!hasSchedule) reason = 'Fechado';
+                    //let reason = 'Indisponível';
+                    if (!hasSchedule) reason = '';
                     
                     weekHTML += `
                         <div class="h-14 sm:h-20 w-full flex flex-col items-center justify-center text-center text-gray-500 cursor-not-allowed rounded-lg sm:rounded-xl bg-gray-800/30 border border-gray-700/50">
@@ -2323,6 +2379,194 @@
                 showToast('Agendamento excluído permanentemente!');
             }
         }
+
+        // Função para exportar backup em PDF
+        window.exportBackupPDF = function() {
+            try {
+                // Coletando todos os dados do localStorage
+                const backupData = {
+                    settings: settings,
+                    services: services,
+                    bookings: bookings,
+                    schedules: schedules || []
+                };
+                
+                // Criando o PDF
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Título
+                doc.setFontSize(20);
+                doc.text('Backup da Barbearia', 20, 20);
+                
+                // Data do backup
+                doc.setFontSize(12);
+                doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')}`, 20, 30);
+                
+                // Informações da barbearia
+                doc.setFontSize(16);
+                doc.text('Informações da Barbearia', 20, 45);
+                doc.setFontSize(10);
+                doc.text(`Nome: ${settings.barbershopName || 'Não definido'}`, 25, 55);
+                doc.text(`Telefone: ${settings.phone || 'Não definido'}`, 25, 62);
+                doc.text(`Email: ${settings.email || 'Não definido'}`, 25, 69);
+                doc.text(`Endereço: ${settings.address || 'Não definido'}`, 25, 76);
+                
+                // Serviços
+                doc.setFontSize(16);
+                doc.text('Serviços', 20, 90);
+                doc.setFontSize(10);
+                
+                let yPos = 100;
+                services.forEach((service, index) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    doc.text(`${index + 1}. ${service.name}`, 25, yPos);
+                    doc.text(`   Preço: R$ ${service.price.toFixed(2)}`, 25, yPos + 7);
+                    doc.text(`   Duração: ${service.duration} min`, 25, yPos + 14);
+                    
+                    yPos += 22;
+                });
+                
+                // Agendamentos
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.text('Agendamentos', 20, 20);
+                doc.setFontSize(10);
+                
+                yPos = 30;
+                bookings.slice(0, 50).forEach((booking, index) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    
+                    const date = new Date(booking.date).toLocaleDateString('pt-BR');
+                    const time = booking.time;
+                    const status = booking.completed ? 'Concluído' : booking.cancelled ? 'Cancelado' : 'Pendente';
+                    
+                    doc.text(`${index + 1}. Cliente: ${booking.clientName}`, 25, yPos);
+                    doc.text(`   Data: ${date} às ${time}`, 25, yPos + 7);
+                    doc.text(`   Status: ${status}`, 25, yPos + 14);
+                    
+                    yPos += 22;
+                });
+                
+                // Resumo
+                doc.addPage();
+                doc.setFontSize(16);
+                doc.text('Resumo do Backup', 20, 20);
+                doc.setFontSize(10);
+                doc.text(`Total de serviços: ${services.length}`, 25, 35);
+                doc.text(`Total de agendamentos: ${bookings.length}`, 25, 42);
+                doc.text(`Agendamentos concluídos: ${bookings.filter(b => b.completed).length}`, 25, 49);
+                doc.text(`Agendamentos pendentes: ${bookings.filter(b => !b.completed && !b.cancelled).length}`, 25, 56);
+                doc.text(`Agendamentos cancelados: ${bookings.filter(b => b.cancelled).length}`, 25, 63);
+                
+                // Download PDF
+                doc.save(`backup_barbearia_${new Date().toISOString().split('T')[0]}.pdf`);
+                
+                showToast('Backup em PDF exportado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao exportar backup em PDF:', error);
+                showToast('Erro ao exportar backup em PDF. Tente novamente.', 'error');
+            }
+        };
+        
+        // Função para exportar backup dos dados
+        window.exportBackup = function() {
+            try {
+                // Coletando todos os dados do localStorage
+                const backupData = {
+                    settings: settings,
+                    services: services,
+                    bookings: bookings,
+                    schedules: schedules || []
+                };
+                
+                // Convertendo para JSON
+                const jsonData = JSON.stringify(backupData);
+                
+                // Criando um blob para download
+                const blob = new Blob([jsonData], {type: 'application/json'});
+                const url = URL.createObjectURL(blob);
+                
+                // Criando link de download
+                const a = document.createElement('a');
+                const date = new Date().toISOString().split('T')[0];
+                a.href = url;
+                a.download = `backup_barbearia_${date}.json`;
+                document.body.appendChild(a);
+                a.click();
+                
+                // Limpeza
+                setTimeout(() => {
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, 100);
+                
+                showToast('Backup exportado com sucesso!');
+            } catch (error) {
+                console.error('Erro ao exportar backup:', error);
+                showToast('Erro ao exportar backup. Tente novamente.', 'error');
+            }
+        };
+        
+        // Função para importar backup
+        window.importBackup = function() {
+            try {
+                // Criando input de arquivo invisível
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                
+                input.onchange = function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        try {
+                            const data = JSON.parse(event.target.result);
+                            
+                            // Verificando se o arquivo tem a estrutura correta
+                            if (!data.settings || !data.services || !data.bookings) {
+                                throw new Error('Arquivo de backup inválido');
+                            }
+                            
+                            // Confirmação do usuário
+                            if (confirm('Tem certeza que deseja restaurar este backup? Todos os dados atuais serão substituídos.')) {
+                                // Restaurando dados
+                                localStorage.setItem('settings', JSON.stringify(data.settings));
+                                localStorage.setItem('services', JSON.stringify(data.services));
+                                localStorage.setItem('bookings', JSON.stringify(data.bookings));
+                                localStorage.setItem('schedules', JSON.stringify(data.schedules || []));
+                                
+                                showToast('Backup restaurado com sucesso! Recarregando página...');
+                                
+                                // Recarregar a página para aplicar as alterações
+                                setTimeout(() => {
+                                    window.location.reload();
+                                }, 1500);
+                            }
+                        } catch (error) {
+                            console.error('Erro ao processar arquivo de backup:', error);
+                            showToast('Arquivo de backup inválido ou corrompido', 'error');
+                        }
+                    };
+                    
+                    reader.readAsText(file);
+                };
+                
+                input.click();
+            } catch (error) {
+                console.error('Erro ao importar backup:', error);
+                showToast('Erro ao importar backup. Tente novamente.', 'error');
+            }
+        };
 
         function loadSettings() {
             // Atualizar elementos da página com as configurações salvas
