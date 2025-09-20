@@ -350,7 +350,7 @@
                     
                     <div class="flex gap-4">
                         <button type="button" onclick="cancelarAgendamento()" class="w-full bg-gray-500 hover:bg-gray-600 text-white py-3 px-6 rounded-lg font-medium transition-colors">
-                            Cancelar
+                            SAIR
                         </button>
                         <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-white py-3 px-6 rounded-lg font-medium transition-colors">
                             Confirmar Agendamento
@@ -962,6 +962,8 @@
         window.showPage = function(pageId) {
             document.querySelectorAll('.page').forEach(page => page.classList.add('hidden'));
             document.getElementById(pageId + 'Page').classList.remove('hidden');
+            // Sempre rola para o topo da página ao navegar
+            window.scrollTo(0, 0);
         }
         
         // Função para cancelar agendamento
@@ -971,7 +973,7 @@
             // Volta para a página inicial
             showPage('home');
             // Mostra mensagem de confirmação
-            showToast('Agendamento cancelado', 'info');
+            showToast('Saindo', 'info');
         }
 
         // Admin authentication functions
